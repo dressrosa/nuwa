@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.xiaoyu.nuwa.utils.tracer.LogConfiguration,\
+  com.xiaoyu.nuwa.utils.filter.RequestFilterConfiguration,\
+  com.xiaoyu.nuwa.utils.advice.RespTraceAdvice
+
+
+org.springframework.context.ApplicationListener=\
+com.xiaoyu.nuwa.utils.tracer.appender.SpringLogAppenderListener
