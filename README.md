@@ -5,18 +5,16 @@
 # 整体结构
 - nuwa-utils-spring-boot-starter: 公共工具
 - nuwa-tracer-spring-boot-starter: 提供请求拦截相关功能
-- nuwa-protobuf-spring-boot-starter: 扩展支持protobuf功能
 - nuwa-redis-spring-boot-starter: 提供redis相关功能
-- nuwa-sso-spring-boot-starter: 提供sso统一登录相关功能
 
 ## nuwa-utils-spring-boot-starter
 nuwa-utils提供一系列日常开发中的基础功能.
 ## 快速使用
 ```xml
  <dependency>
-            <groupId>com.iflytek.ime</groupId>
+            <groupId>com.xiaoyu</groupId>
             <artifactId>nuwa-utils-spring-boot-starter</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
  </dependency>
 ```
 ### 限流
@@ -53,7 +51,7 @@ nuwa:
 
 ```java
 
-import com.iflytek.ime.nuwa.utils.AssertUtils
+import com.xiaoyu.nuwa.utils.AssertUtils
 
 public void check(String userName) {
  	AssertUtils.notBlank(userName, "用户名不能为空");
@@ -72,7 +70,7 @@ nuwa提供通用的线程池实现和管理.
             @Override
             public void doRun() {
                 //do something
-            }
+            }å
         });
 
 ```
@@ -106,7 +104,6 @@ nuwa提供内存缓存工具类 SimpleLocalCacheUtils
  - EncryptUtil 异或加解密
  - GzipUtils gzip解压缩
  - IdGenerator 分布式唯一id
- - TimeUtils 时间处理
 
 ### 上下文
 上下文包括两部分信息(获取上下文需启用nuwa-tracer)\
@@ -115,7 +112,7 @@ nuwa提供内存缓存工具类 SimpleLocalCacheUtils
 nuwa提供统一的处理工具类.\
 
 ```java
-import com.iflytek.ime.nuwa.utils.context.ContextUtil
+import com.xiaoyu.nuwa.utils.context.ContextUtil
 
 ContextUtil.setStandardContext("hello", "world");
 
@@ -150,9 +147,9 @@ tracer提供全局请求拦截和日志处理,依赖nuwa-utils
 ## 快速使用
 ```xml
  <dependency>
-            <groupId>com.iflytek.ime</groupId>
+            <groupId>com.xiaoyu</groupId>
             <artifactId>nuwa-tracer-spring-boot-starter</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
  </dependency>
 ```
 
@@ -166,7 +163,7 @@ xml配置的格式:
  <pattern>[%p][%d{yyyy-MM-dd HH:mm:ss.SSS}][%logger{1.}:%L]%X{pspanid}%X{spanid}%X{traceid}%m%n</pattern>
 
 实际打印如下:
-[INFO][2023-10-23 17:21:48.058][com.iflytek.ime.photo.common.tracer.utils.LogUtils:132][d4eb41c0d5cbf80577b37][923264071472513024][ebe19dd4eb41c0d5cbf80577b3765b6d]_msg=com_request_out||uri=/photo/api/v1/model/callback||remoteip=192.180.196.64||cost=2||body={"code":"100500","count":0,"message":"system error"}
+[INFO][2023-10-23 17:21:48.058][com.xiaoyu.common.tracer.utils.LogUtils:132][d4eb41c0d5cbf80577b37][923264071472513024][ebe19dd4eb41c0d5cbf80577b3765b6d]_msg=com_request_out||uri=/api/v1/xxx||remoteip=127.0.0.1||cost=2||body={"code":"100500","count":0,"message":"system error"}
 ```
 对于开发打印的日志,基于以下标签进行格式约定.
 ```text
@@ -174,17 +171,17 @@ xml配置的格式:
 ```
 固定标签如下:
 
-|名称   |  释义 |
-| ------------ | ------------ |
-|_msg   |  标识日志的类别. 具体如下 com_request_in:外部请求 com_request_out:外部请求的返回 http_request_in: 请求外部服务 http_request_out: 请求外部服务的返回|
-|uri   |  请求路径|
-|remoteip   |  请求ip或域名|
-|cost   |  请求耗时(ms)|
-|return_code   |  请求返回码|
-|http_status   |  http状态码|
-|body   |  请求体或返回体|
-|params |  get请求的参数|
-|query  |  url后拼接的参数|
+| 名称        | 释义                                                                                                                                               |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _msg        | 标识日志的类别. 具体如下 com_request_in:外部请求 com_request_out:外部请求的返回 http_request_in: 请求外部服务 http_request_out: 请求外部服务的返回 |
+| uri         | 请求路径                                                                                                                                           |
+| remoteip    | 请求ip或域名                                                                                                                                       |
+| cost        | 请求耗时(ms)                                                                                                                                       |
+| return_code | 请求返回码                                                                                                                                         |
+| http_status | http状态码                                                                                                                                         |
+| body        | 请求体或返回体                                                                                                                                     |
+| params      | get请求的参数                                                                                                                                      |
+| query       | url后拼接的参数                                                                                                                                    |
 
 
 开发者可根据此格式自行定义标签.nuwa提供类似功能的工具类,自定义了event标签.
@@ -238,55 +235,13 @@ nuwa:
 开发者可安装logAgent,让日志进行上传远端日志服务器.
 
 
-## nuwa-protobuf-spring-boot-starter
-对于protobuf格式进行交互的,可通过引入此插件进行请求信息处理.依赖nuwa-utils
- ### 快速使用
-```xml
- <dependency>
-            <groupId>com.iflytek.ime</groupId>
-            <artifactId>nuwa-protobuf-spring-boot-starter</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
- </dependency>
-
-```
-对于需要加解密或解压缩的请求,可结合nuwa-tracer使用.
-```java
-@WebFilter(filterName = "accessFilter", urlPatterns = { "/api/*", })
-public class AccessFilter implements Filter {
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        ReadableRequestWrapper requestWrapper = null;
-        if (request instanceof ReadableRequestWrapper) {
-            requestWrapper = (ReadableRequestWrapper) request;
-        } else {
-            requestWrapper = new ReadableRequestWrapper((HttpServletRequest) request);
-        }
-        ReadableResponseWrapper respWrapper = null;
-        if (response instanceof ReadableResponseWrapper) {
-            respWrapper = (ReadableResponseWrapper) response;
-        } else {
-            respWrapper = new ReadableResponseWrapper((HttpServletResponse) response);
-        }
-        // 对请求进行解压缩
-        if (ContentTypeUtil.isProtoRequest(request.getContentType())) {
-            requestWrapper.uncompressGzip();
-            respWrapper.setNeedGzip(true);
-        }
-        chain.doFilter(requestWrapper, respWrapper);
-    }
-
-}
-```
-
 ## nuwa-redis-spring-boot-starter
  ### 快速使用
  ```xml
  <dependency>
-            <groupId>com.iflytek.ime</groupId>
+            <groupId>com.xiaoyu</groupId>
             <artifactId>nuwa-redis-spring-boot-starter</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
  </dependency>
 ```
 配置:
@@ -296,9 +251,9 @@ nuwa:
     configs:
      - name: default
        open: true
-       host: 10.100.109.20:18104,10.100.109.21:18104
-       masterName: msgcenter
-       db: 8
+       host: 127.0.0.1:1001,127.0.0.1:1002
+       masterName: himaster
+       db: 0
        maxIdle: 10
        minIdle: 3
        maxWaitMillis: 1000
@@ -306,28 +261,30 @@ nuwa:
        testOnReturn: true
      - name: user
        open: true
-       host: 172.22.23.37:8200
+       host: 127.0.0.1:1003
        masterName:
-       db: 8
+       db: 1
        maxIdle: 10
        minIdle: 3
        maxWaitMillis: 1000
        testOnBorrow: true
        testOnReturn: true
+       preStart: true
 ```
-|名称   |  释义 |
-| ------------ | ------------ |
-|name   |  redis名称, 用于区分多个实例.标注主使用的redis为default|
-|open   | 是否开启|
-|host   |  redis地址|
-|masterName   | 哨兵模式中的master,不填则为单机模式|
-|db   |  默认为0|
+| 名称       | 释义                                                   |
+| ---------- | ------------------------------------------------------ |
+| name       | redis名称, 用于区分多个实例.标注主使用的redis为default |
+| open       | 是否开启                                               |
+| host       | redis地址                                              |
+| masterName | 哨兵模式中的master,不填则为单机模式                    |
+| db         | 默认为0                                                |
+| preStart   | 初始化redis连接池                                      |
 1. nuwa提供JedisUtils供开发者使用,默认使用default的redis,多实例情况下开发者可根据name来获取不同的redis.\
-(注:nuwa中jedis会延迟初始化,因此使用@PostConstruct时,此时jedis还未初始化.)
+
 ```java
 public static Jedis getRedis(String name)
 ```
-2. nuwa提供RedisLock来实现分布式锁,默认使用default实例实现.
+1. nuwa提供RedisLock来实现分布式锁,默认使用default实例实现.
 ```java
  RedisLock lock = RedisLock.getLock("hello");
   try {
@@ -339,36 +296,4 @@ public static Jedis getRedis(String name)
    }
 ```
 
-## nuwa-sso-spring-boot-starter
-对于管理后台需要接入集团sso登录的,可通过引入此插件sso登录拦截处理.依赖nuwa-utils
- ### 快速使用
-```xml
- <dependency>
-            <groupId>com.iflytek.ime</groupId>
-            <artifactId>nuwa-sso-spring-boot-starter</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
- </dependency>
-
-```
-配置使用
-
-```yaml
-nuwa:
-  sso:
-    #是否开启 默认关闭
-    open: true 
-    # 指定请求需要进行登录拦截 支持spring通配符
-    patterns: 
-    -/api/v1/xxxx
-    -/api/v2/**
-    #登录成功后回跳的页面链接
-    jump: http://xxx/page/main 
-    #单位:秒 默认6h 登录成功后按userId进行缓存
-    cacheSecond: 3600   
-
-```
-1. 对于首次未登录的请求,会在以httpstatus=401返回给前端,并在header中返回redirectUrl,开发人员自行处理重定向.
-2. 对于拦截登录的请求,登录后的ssoUserId,会通过header返回给前端,开发人员可自行处理
-3. 单独引入nuwa-sso只会拦截登录信息,如果需要将登录后信息传入业务中,
-需要配合nuwa-tracer共同使用.
 
